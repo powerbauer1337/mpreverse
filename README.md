@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024.1+-orange.svg)](https://www.home-assistant.io/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A comprehensive reverse engineering project for MarsPro smart devices, enabling local control through Home Assistant without cloud dependency.
 
@@ -18,6 +19,8 @@ This project reverse engineers the MarsPro Android application to understand the
 - ☁️ **Cloud API Support**: Fallback to cloud API when needed
 - 📚 **Comprehensive Documentation**: Detailed analysis and implementation guides
 - 🛠️ **Analysis Tools**: Frida scripts and utilities for protocol discovery
+- 🧪 **Test Suite**: Comprehensive unit and integration tests
+- 🔧 **Modern Development**: Modern Python packaging and development tools
 
 ## 📋 Table of Contents
 
@@ -28,6 +31,7 @@ This project reverse engineers the MarsPro Android application to understand the
 - [Home Assistant Integration](#home-assistant-integration)
 - [Configuration](#configuration)
 - [Development](#development)
+- [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -50,13 +54,17 @@ This project reverse engineers the MarsPro Android application to understand the
 
 2. **Install dependencies**
    ```bash
+   # Install production dependencies
    pip install -r requirements.txt
+   
+   # Install development dependencies
+   pip install -r requirements-dev.txt
    ```
 
 3. **Install Home Assistant integration**
    ```bash
    # Copy the integration to your Home Assistant config
-   cp -r custom_components/marspro /path/to/homeassistant/config/custom_components/
+   cp -r src/marspro /path/to/homeassistant/config/custom_components/
    ```
 
 ## ⚡ Quick Start
@@ -127,30 +135,92 @@ marspro:
 
 ```
 MarsPro/
-├── custom_components/marspro/     # Home Assistant integration
-│   ├── __init__.py               # Main integration file
-│   ├── api.py                    # API client (cloud + BLE)
-│   ├── config_flow.py            # Configuration UI
-│   ├── const.py                  # Constants and configuration
-│   ├── coordinator.py             # Data coordinator
-│   ├── light.py                  # Light platform
-│   └── manifest.json             # Integration manifest
-├── docs/                         # Documentation
-│   ├── analysis.md               # APK analysis results
-│   ├── endpoints.md              # API endpoint documentation
-│   └── project_summary.md        # Project overview
-├── scripts/                      # Analysis and utility scripts
-│   ├── analyze.py                # APK analysis script
-│   ├── ble_hook.js               # Frida BLE hook
-│   └── setup_github_repo.ps1     # GitHub setup script
-├── configuration_samples/         # Configuration examples
-│   └── marspro_configuration.yaml
-├── output/                       # Analysis outputs
-│   ├── apktool_output/           # APK decompilation
-│   └── jadx_output/              # Java source code
-└── tools/                        # Analysis tools
-    ├── jadx/                     # JADX decompiler
-    └── frida/                    # Frida scripts
+├── 📁 src/                            # Source code and main components
+│   ├── 📁 marspro/                    # Home Assistant integration
+│   │   ├── __init__.py               # Main component initialization
+│   │   ├── api.py                    # API client for MarsPro devices
+│   │   ├── config_flow.py            # Configuration UI
+│   │   ├── const.py                  # Constants and configuration
+│   │   ├── coordinator.py            # Data coordinator
+│   │   ├── light.py                  # Light platform
+│   │   └── manifest.json             # Component metadata
+│   └── 📁 review_gate/               # Review Gate V2 integration
+│       ├── __init__.py               # Review Gate initialization
+│       ├── mcp_server.py             # MCP server implementation
+│       └── config.py                 # Review Gate configuration
+│
+├── 📁 analysis/                       # Analysis documentation and logs
+│   ├── analysis.log                   # Analysis execution logs
+│   ├── analysis_summary.md            # Analysis progress summary
+│   ├── api_documentation.md           # API endpoint documentation
+│   ├── api_mapping.md                 # Cloud vs local function mapping
+│   └── protocols/                     # Discovered protocols
+│       ├── ble_protocol.md           # BLE communication protocol
+│       └── cloud_api.md              # Cloud API documentation
+│
+├── 📁 assets/                         # Static assets and binaries
+│   ├── 📁 apks/                      # APK files for analysis
+│   │   └── MarsPro_1.3.2_APKPure.xapk # Target APK file
+│   ├── 📁 tools/                     # External tool binaries
+│   │   ├── jadx/                     # JADX decompiler
+│   │   └── apktool/                  # APKTool
+│   └── 📁 review_gate/               # Review Gate assets
+│       ├── cursor-extension/         # Cursor IDE extension
+│       └── installers/               # Installation scripts
+│
+├── 📁 config/                         # Configuration files
+│   ├── mcp.json                      # MCP server configuration
+│   ├── home_assistant/               # Home Assistant configs
+│   │   └── marspro_configuration.yaml # Complete configuration example
+│   └── development/                  # Development configs
+│       ├── .pre-commit-config.yaml   # Pre-commit hooks
+│       └── pytest.ini               # Test configuration
+│
+├── 📁 docs/                           # Project documentation
+│   ├── README.md                     # Main project documentation
+│   ├── CONTRIBUTING.md               # Contribution guidelines
+│   ├── INSTALLATION.md               # Installation guide
+│   ├── API.md                        # API documentation
+│   └── DEVELOPMENT.md                # Development guide
+│
+├── 📁 scripts/                        # Analysis and automation scripts
+│   ├── analyze.py                    # Main analysis orchestrator
+│   ├── setup.py                      # Project setup script
+│   ├── frida/                        # Frida analysis scripts
+│   │   ├── net_hook.js               # HTTP interception
+│   │   └── ble_hook.js               # BLE interception
+│   └── utilities/                    # Utility scripts
+│       ├── setup_github_repo.ps1     # GitHub setup script
+│       └── test_mcp_servers.py       # MCP server testing
+│
+├── 📁 tools/                          # Analysis tools and MCP servers
+│   ├── 📁 mcp_servers/               # MCP server implementations
+│   │   ├── apktool_server/           # APKTool MCP server
+│   │   ├── jadx_server/              # JADX MCP server
+│   │   └── reverse_engineering/      # Reverse engineering assistant
+│   └── 📁 external/                  # External tools
+│       └── reverse-engineering-assistant-main/
+│
+├── 📁 tests/                          # Test suite
+│   ├── 📁 unit/                      # Unit tests
+│   │   ├── test_api.py               # API tests
+│   │   └── test_coordinator.py       # Coordinator tests
+│   ├── 📁 integration/               # Integration tests
+│   │   └── test_home_assistant.py    # Home Assistant integration tests
+│   └── 📁 fixtures/                  # Test fixtures and data
+│
+├── 📁 output/                         # Analysis output files
+│   ├── apktool_output/               # apktool decompilation output
+│   ├── jadx_output/                  # jadx decompilation output
+│   └── logs/                         # Analysis logs
+│
+├── 📄 setup.py                        # Package installation script
+├── 📄 requirements.txt                # Production dependencies
+├── 📄 requirements-dev.txt            # Development dependencies
+├── 📄 pyproject.toml                  # Modern Python project configuration
+├── 📄 .gitignore                      # Git ignore patterns
+├── 📄 LICENSE                         # Project license
+└── 📄 README.md                       # Project overview
 ```
 
 ## 🔍 Analysis Results
@@ -198,283 +268,123 @@ MarsPro/
 
 - **Light Platform**: Full light entity support
 - **Sensor Platform**: Device status sensors (planned)
-- **Switch Platform**: Device power switches (planned)
 
-### Configuration Options
+## 🧪 Testing
 
-```yaml
-marspro:
-  # Connection settings
-  connection_mode: "auto"  # auto, ble, cloud
-  username: "your_email@example.com"
-  password: "your_password"
-  
-  # BLE settings
-  ble_scan_timeout: 10
-  ble_connect_timeout: 30
-  
-  # Cloud settings
-  cloud_api_url: "https://api.marspro.com"
-  
-  # Device configuration
-  devices:
-    - name: "Grow Light 1"
-      mac_address: "A0:B1:C2:D3:E4:F5"
-      device_type: "light"
-      room: "Grow Room"
-      
-    - name: "Grow Light 2"
-      mac_address: "A0:B1:C2:D3:E4:F6"
-      device_type: "light"
-      room: "Grow Room"
+### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run unit tests only
+pytest tests/unit/
+
+# Run integration tests only
+pytest tests/integration/
+
+# Run with coverage
+pytest --cov=src --cov-report=html
+
+# Run specific test markers
+pytest -m "unit"
+pytest -m "integration"
+pytest -m "api"
 ```
 
-## ⚙️ Configuration
+### Test Categories
 
-### Basic Configuration
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: Home Assistant integration testing
+- **API Tests**: API client functionality testing
+- **BLE Tests**: Bluetooth communication testing
 
-```yaml
-# configuration.yaml
-marspro:
-  username: your_email@example.com
-  password: your_password
+## 🔧 Development
+
+### Code Quality
+
+```bash
+# Format code
+black src/ tests/
+
+# Lint code
+flake8 src/ tests/
+
+# Type checking
+mypy src/
+
+# Run pre-commit hooks
+pre-commit run --all-files
 ```
 
-### Advanced Configuration
+### Development Setup
 
-```yaml
-# configuration.yaml
-marspro:
-  # Connection settings
-  connection_mode: "ble"  # Use BLE for local control
-  username: your_email@example.com
-  password: your_password
-  
-  # BLE configuration
-  ble_scan_timeout: 15
-  ble_connect_timeout: 30
-  ble_retry_attempts: 3
-  
-  # Cloud configuration
-  cloud_api_url: "https://api.marspro.com"
-  cloud_timeout: 30
-  
-  # Device discovery
-  auto_discover: true
-  discovery_timeout: 60
-  
-  # Logging
-  debug: false
-```
-
-### Automation Examples
-
-```yaml
-# automations.yaml
-
-# Sunrise automation
-- alias: "Grow lights sunrise sequence"
-  description: "Gradually increase light intensity at sunrise"
-  trigger:
-    platform: sun
-    event: sunrise
-  action:
-    - service: light.turn_on
-      target:
-        entity_id: light.grow_light
-      data:
-        brightness: 64
-    - delay: "00:30:00"
-    - service: light.turn_on
-      target:
-        entity_id: light.grow_light
-      data:
-        brightness: 128
-    - delay: "00:30:00"
-    - service: light.turn_on
-      target:
-        entity_id: light.grow_light
-      data:
-        brightness: 255
-
-# Sunset automation
-- alias: "Grow lights sunset sequence"
-  description: "Gradually decrease light intensity at sunset"
-  trigger:
-    platform: sun
-    event: sunset
-  action:
-    - service: light.turn_on
-      target:
-        entity_id: light.grow_light
-      data:
-        brightness: 128
-    - delay: "00:30:00"
-    - service: light.turn_on
-      target:
-        entity_id: light.grow_light
-      data:
-        brightness: 64
-    - delay: "00:30:00"
-    - service: light.turn_off
-      target:
-        entity_id: light.grow_light
-
-# Timer-based automation
-- alias: "Grow light timer"
-  description: "Run grow lights for 12 hours"
-  trigger:
-    platform: time
-    at: "08:00:00"
-  action:
-    - service: light.turn_on
-      target:
-        entity_id: light.grow_light
-      data:
-        brightness: 255
-    - delay: "12:00:00"
-    - service: light.turn_off
-      target:
-        entity_id: light.grow_light
-```
-
-### Script Examples
-
-```yaml
-# scripts.yaml
-
-# Morning routine
-morning_grow_routine:
-  alias: "Morning Grow Routine"
-  sequence:
-    - service: light.turn_on
-      target:
-        entity_id: light.grow_light
-      data:
-        brightness: 128
-    - service: notify.mobile_app
-      data:
-        message: "Grow lights are now on at 50% brightness"
-
-# Evening routine
-evening_grow_routine:
-  alias: "Evening Grow Routine"
-  sequence:
-    - service: light.turn_on
-      target:
-        entity_id: light.grow_light
-      data:
-        brightness: 64
-    - delay: "01:00:00"
-    - service: light.turn_off
-      target:
-        entity_id: light.grow_light
-    - service: notify.mobile_app
-      data:
-        message: "Grow lights are now off"
-
-# Emergency shutdown
-emergency_grow_shutdown:
-  alias: "Emergency Grow Shutdown"
-  sequence:
-    - service: light.turn_off
-      target:
-        entity_id: light.grow_light
-    - service: notify.mobile_app
-      data:
-        message: "Emergency: All grow lights have been shut down"
-```
-
-## 🛠️ Development
-
-### Setting Up Development Environment
-
-1. **Clone and setup**
+1. **Install development dependencies**
    ```bash
-   git clone https://github.com/your-username/marspro-analysis.git
-   cd marspro-analysis
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements-dev.txt
    ```
 
-2. **Install pre-commit hooks**
+2. **Setup pre-commit hooks**
    ```bash
    pre-commit install
    ```
 
-3. **Run tests**
+3. **Configure MCP servers**
    ```bash
-   pytest tests/
+   # Copy MCP configuration
+   cp config/mcp.json ~/.cursor/mcp.json
    ```
 
-### Analysis Tools
+### Analysis Workflow
 
-#### Static Analysis
-
-```bash
-# Analyze APK
-python scripts/analyze.py apks/MarsPro.apk
-
-# Generate documentation
-python scripts/generate_docs.py
-```
-
-#### Dynamic Analysis
-
-```bash
-# Start Frida server
-adb push frida-server /data/local/tmp/
-adb shell "chmod 755 /data/local/tmp/frida-server"
-adb shell "/data/local/tmp/frida-server &"
-
-# Run BLE hooks
-frida -U -f com.marspro.app -l scripts/ble_hook.js
-```
-
-### Adding New Features
-
-1. **Create feature branch**
+1. **Static Analysis**
    ```bash
-   git checkout -b feature/new-feature
+   python scripts/analyze.py assets/apks/MarsPro_1.3.2_APKPure.xapk
    ```
 
-2. **Implement changes**
-   - Follow coding guidelines
-   - Add tests
-   - Update documentation
-
-3. **Submit pull request**
+2. **Dynamic Analysis**
    ```bash
-   git push origin feature/new-feature
+   # HTTP interception
+   frida -U -f com.marspro.app -l scripts/frida/net_hook.js --no-pause
+   
+   # BLE interception
+   frida -U -f com.marspro.app -l scripts/frida/ble_hook.js --no-pause
    ```
+
+3. **Documentation Generation**
+   ```bash
+   # Analysis results are automatically documented
+   # Check analysis/ directory for generated documentation
+   ```
+
+## 📚 Documentation
+
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Contribution guidelines
+- **[INSTALLATION.md](docs/INSTALLATION.md)**: Detailed installation guide
+- **[API.md](docs/API.md)**: API documentation
+- **[DEVELOPMENT.md](docs/DEVELOPMENT.md)**: Development guide
+- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)**: Project structure documentation
 
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-### How to Contribute
+### Development Process
 
-1. **Fork the repository**
-2. **Create a feature branch**
-3. **Make your changes**
-4. **Add tests**
-5. **Submit a pull request**
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
 
-### Development Guidelines
+### Code Standards
 
-- Follow PEP 8 Python style guidelines
+- Follow PEP 8 style guidelines
 - Use type hints for all functions
-- Write comprehensive tests
-- Update documentation for new features
-- Follow Home Assistant integration guidelines
-
-### Reporting Issues
-
-- Use the bug report template
-- Include device information and logs
-- Provide steps to reproduce
-- Check existing issues first
+- Write comprehensive docstrings
+- Add tests for new functionality
+- Update documentation as needed
 
 ## 📄 License
 
@@ -482,24 +392,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **MarsPro**: For creating innovative smart devices
-- **Home Assistant Community**: For the excellent integration framework
-- **Frida Project**: For powerful dynamic analysis tools
-- **JADX Team**: For excellent APK decompilation tools
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/your-username/marspro-analysis/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/marspro-analysis/discussions)
-- **Documentation**: [Project Wiki](https://github.com/your-username/marspro-analysis/wiki)
-
-## 🔗 Related Projects
-
-- [Home Assistant](https://www.home-assistant.io/)
-- [Frida](https://frida.re/)
-- [JADX](https://github.com/skylot/jadx)
-- [Flutter Reactive BLE](https://github.com/PhilipsHue/flutter_reactive_ble)
+- MarsPro team for creating the original app
+- Home Assistant community for integration patterns
+- Frida team for dynamic analysis tools
+- JADX team for APK decompilation tools
 
 ---
 
-**Disclaimer**: This project is for educational and interoperability purposes. Please respect the terms of service of the original applications and use this integration responsibly. 
+**Note**: This project is for educational and research purposes. Please respect the terms of service of the original MarsPro application and use this integration responsibly. 

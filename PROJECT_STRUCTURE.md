@@ -8,130 +8,173 @@ This document describes the reorganized structure of the MarsPro reverse enginee
 
 ```
 MarsPro/
-├── 📁 apks/                           # APK files for analysis
-│   └── MarsPro_1.3.2_APKPure.xapk    # Target APK file
+├── 📁 src/                            # Source code and main components
+│   ├── 📁 marspro/                    # Home Assistant integration
+│   │   ├── __init__.py               # Main component initialization
+│   │   ├── api.py                    # API client for MarsPro devices
+│   │   ├── config_flow.py            # Configuration UI
+│   │   ├── const.py                  # Constants and configuration
+│   │   ├── coordinator.py            # Data coordinator
+│   │   ├── light.py                  # Light platform
+│   │   └── manifest.json             # Component metadata
+│   └── 📁 review_gate/               # Review Gate V2 integration
+│       ├── __init__.py               # Review Gate initialization
+│       ├── mcp_server.py             # MCP server implementation
+│       └── config.py                 # Review Gate configuration
 │
 ├── 📁 analysis/                       # Analysis documentation and logs
 │   ├── analysis.log                   # Analysis execution logs
 │   ├── analysis_summary.md            # Analysis progress summary
 │   ├── api_documentation.md           # API endpoint documentation
-│   └── api_mapping.md                 # Cloud vs local function mapping
+│   ├── api_mapping.md                 # Cloud vs local function mapping
+│   └── protocols/                     # Discovered protocols
+│       ├── ble_protocol.md           # BLE communication protocol
+│       └── cloud_api.md              # Cloud API documentation
 │
-├── 📁 configuration_samples/          # Home Assistant configuration examples
-│   └── marspro_configuration.yaml     # Complete configuration example
+├── 📁 assets/                         # Static assets and binaries
+│   ├── 📁 apks/                      # APK files for analysis
+│   │   └── MarsPro_1.3.2_APKPure.xapk # Target APK file
+│   ├── 📁 tools/                     # External tool binaries
+│   │   ├── jadx/                     # JADX decompiler
+│   │   └── apktool/                  # APKTool
+│   └── 📁 review_gate/               # Review Gate assets
+│       ├── cursor-extension/         # Cursor IDE extension
+│       └── installers/               # Installation scripts
 │
-├── 📁 custom_components/              # Home Assistant integration
-│   └── 📁 marspro/
-│       ├── __init__.py                # Main component initialization
-│       ├── const.py                   # Constants and configuration keys
-│       ├── manifest.json              # Component metadata
-│       └── api.py                     # API client for MarsPro devices
+├── 📁 config/                         # Configuration files
+│   ├── mcp.json                      # MCP server configuration
+│   ├── home_assistant/               # Home Assistant configs
+│   │   └── marspro_configuration.yaml # Complete configuration example
+│   └── development/                  # Development configs
+│       ├── .pre-commit-config.yaml   # Pre-commit hooks
+│       └── pytest.ini               # Test configuration
 │
 ├── 📁 docs/                           # Project documentation
-│   ├── analysis.md                    # Main analysis documentation
-│   └── endpoints.md                   # API endpoints documentation
-│
-├── 📁 output/                         # Analysis output files
-│   ├── apktool_output/                # apktool decompilation output
-│   └── jadx_output/                   # jadx decompilation output
+│   ├── README.md                     # Main project documentation
+│   ├── CONTRIBUTING.md               # Contribution guidelines
+│   ├── INSTALLATION.md               # Installation guide
+│   ├── API.md                        # API documentation
+│   └── DEVELOPMENT.md                # Development guide
 │
 ├── 📁 scripts/                        # Analysis and automation scripts
-│   ├── analyze.py                     # Main analysis orchestrator
-│   ├── net_hook.js                    # Frida script for HTTP interception
-│   └── ble_hook.js                    # Frida script for BLE interception
+│   ├── analyze.py                    # Main analysis orchestrator
+│   ├── setup.py                      # Project setup script
+│   ├── frida/                        # Frida analysis scripts
+│   │   ├── net_hook.js               # HTTP interception
+│   │   └── ble_hook.js               # BLE interception
+│   └── utilities/                    # Utility scripts
+│       ├── setup_github_repo.ps1     # GitHub setup script
+│       └── test_mcp_servers.py       # MCP server testing
 │
-├── 📁 tools/                          # External tools and utilities
-│   └── 📁 reverse-engineering-assistant-main/  # MCP server tools
-│       ├── src/                       # Source code
-│       ├── ghidra_scripts/            # Ghidra analysis scripts
-│       ├── lib/                       # Library files
-│       └── README.md                  # Tool documentation
+├── 📁 tools/                          # Analysis tools and MCP servers
+│   ├── 📁 mcp_servers/               # MCP server implementations
+│   │   ├── apktool_server/           # APKTool MCP server
+│   │   ├── jadx_server/              # JADX MCP server
+│   │   └── reverse_engineering/      # Reverse engineering assistant
+│   └── 📁 external/                  # External tools
+│       └── reverse-engineering-assistant-main/
 │
-├── 📁 .cursor/                        # Cursor IDE configuration
-│   └── mcp.json                       # MCP server configuration
+├── 📁 tests/                          # Test suite
+│   ├── 📁 unit/                      # Unit tests
+│   │   ├── test_api.py               # API tests
+│   │   └── test_coordinator.py       # Coordinator tests
+│   ├── 📁 integration/               # Integration tests
+│   │   └── test_home_assistant.py    # Home Assistant integration tests
+│   └── 📁 fixtures/                  # Test fixtures and data
 │
-├── 📄 README.md                       # Project overview and setup guide
-├── 📄 PROJECT_STRUCTURE.md            # This file
-├── 📄 requirements.txt                # Python dependencies
-├── 📄 setup.py                        # Installation script
-├── 📄 mcp.json                        # Root MCP configuration
-└── 📄 task.prompt                     # Original project requirements
+├── 📁 output/                         # Analysis output files
+│   ├── apktool_output/               # apktool decompilation output
+│   ├── jadx_output/                  # jadx decompilation output
+│   └── logs/                         # Analysis logs
+│
+├── 📄 setup.py                        # Package installation script
+├── 📄 requirements.txt                # Production dependencies
+├── 📄 requirements-dev.txt            # Development dependencies
+├── 📄 pyproject.toml                  # Modern Python project configuration
+├── 📄 .gitignore                      # Git ignore patterns
+├── 📄 LICENSE                         # Project license
+└── 📄 README.md                       # Project overview
 ```
 
 ## File Descriptions
 
-### Core Analysis Files
+### Core Source Code
 
-#### `scripts/analyze.py`
-- **Purpose**: Main analysis orchestrator
-- **Function**: Runs all 5 phases of the reverse engineering workflow
-- **Usage**: `python scripts/analyze.py apks/MarsPro_1.3.2_APKPure.xapk`
-
-#### `scripts/net_hook.js`
-- **Purpose**: HTTP/HTTPS traffic interception
-- **Function**: Hooks network calls to discover REST API endpoints
-- **Usage**: `frida -U -f com.marspro.app -l scripts/net_hook.js --no-pause`
-
-#### `scripts/ble_hook.js`
-- **Purpose**: BLE communication interception
-- **Function**: Hooks Bluetooth calls to discover BLE protocols
-- **Usage**: `frida -U -f com.marspro.app -l scripts/ble_hook.js --no-pause`
-
-### Documentation Files
-
-#### `docs/analysis.md`
-- **Purpose**: Main analysis documentation
-- **Content**: Analysis phases, workflow, tools, and progress tracking
-
-#### `docs/endpoints.md`
-- **Purpose**: API endpoints documentation
-- **Content**: REST API endpoints, BLE protocols, and communication formats
-
-#### `analysis/analysis_summary.md`
-- **Purpose**: Analysis progress summary
-- **Content**: Current status, discovered components, and next steps
-
-### Home Assistant Integration
-
-#### `custom_components/marspro/`
-- **Purpose**: Home Assistant custom component
+#### `src/marspro/`
+- **Purpose**: Home Assistant integration component
 - **Components**:
   - `__init__.py`: Component initialization and configuration
+  - `api.py`: API client for MarsPro devices (BLE + Cloud)
+  - `config_flow.py`: Configuration UI for Home Assistant
   - `const.py`: Constants and configuration keys
+  - `coordinator.py`: Data coordinator for device management
+  - `light.py`: Light platform implementation
   - `manifest.json`: Component metadata and dependencies
-  - `api.py`: API client for MarsPro devices
 
-#### `configuration_samples/marspro_configuration.yaml`
-- **Purpose**: Home Assistant configuration examples
-- **Content**: Complete configuration with automations and scripts
+#### `src/review_gate/`
+- **Purpose**: Review Gate V2 MCP server integration
+- **Components**:
+  - `__init__.py`: Review Gate initialization
+  - `mcp_server.py`: MCP server implementation
+  - `config.py`: Review Gate configuration
 
-### Configuration Files
+### Analysis Tools
 
-#### `.cursor/mcp.json`
-- **Purpose**: MCP server configuration for Cursor IDE
-- **Content**: Reverse engineering assistant and other MCP servers
+#### `tools/mcp_servers/`
+- **Purpose**: MCP server implementations for analysis tools
+- **Servers**:
+  - `apktool_server/`: APKTool MCP server
+  - `jadx_server/`: JADX MCP server
+  - `reverse_engineering/`: Reverse engineering assistant
 
-#### `requirements.txt`
-- **Purpose**: Python dependencies
-- **Dependencies**: frida-tools, uv, mcp, aiohttp, bleak
+#### `scripts/frida/`
+- **Purpose**: Frida analysis scripts for dynamic analysis
+- **Scripts**:
+  - `net_hook.js`: HTTP/HTTPS traffic interception
+  - `ble_hook.js`: BLE communication interception
 
-#### `setup.py`
-- **Purpose**: Installation script
-- **Function**: Package installation and entry points
+### Configuration
+
+#### `config/`
+- **Purpose**: All configuration files
+- **Files**:
+  - `mcp.json`: MCP server configuration
+  - `home_assistant/`: Home Assistant configuration examples
+  - `development/`: Development tool configurations
+
+### Documentation
+
+#### `docs/`
+- **Purpose**: Comprehensive project documentation
+- **Files**:
+  - `README.md`: Main project documentation
+  - `CONTRIBUTING.md`: Contribution guidelines
+  - `INSTALLATION.md`: Installation guide
+  - `API.md`: API documentation
+  - `DEVELOPMENT.md`: Development guide
+
+### Assets
+
+#### `assets/`
+- **Purpose**: Static assets and binaries
+- **Directories**:
+  - `apks/`: APK files for analysis
+  - `tools/`: External tool binaries
+  - `review_gate/`: Review Gate assets and extensions
 
 ## Analysis Workflow
 
 ### Phase 1: Static Analysis
-1. **Input**: APK file in `apks/` directory
-2. **Tools**: apktool, jadx
+1. **Input**: APK file in `assets/apks/` directory
+2. **Tools**: APKTool and JADX MCP servers in `tools/mcp_servers/`
 3. **Output**: Decompiled files in `output/` directory
 4. **Documentation**: Extracted files in `analysis/` directory
 
 ### Phase 2: Dynamic Analysis
 1. **Input**: Decompiled APK and Frida scripts
-2. **Tools**: Frida, ADB
-3. **Scripts**: `scripts/net_hook.js`, `scripts/ble_hook.js`
-4. **Output**: Network and BLE traffic logs
+2. **Tools**: Frida scripts in `scripts/frida/`
+3. **Scripts**: `net_hook.js`, `ble_hook.js`
+4. **Output**: Network and BLE traffic logs in `output/logs/`
 
 ### Phase 3: Documentation
 1. **Input**: Analysis results
@@ -140,52 +183,61 @@ MarsPro/
 
 ### Phase 4: Home Assistant Integration
 1. **Input**: Discovered APIs and protocols
-2. **Output**: Updated Home Assistant component
-3. **Files**: `custom_components/marspro/`, configuration examples
+2. **Output**: Updated Home Assistant component in `src/marspro/`
+3. **Configuration**: Examples in `config/home_assistant/`
 
 ### Phase 5: Testing
 1. **Input**: Complete integration
 2. **Output**: Test results and validation
-3. **Validation**: Unit tests, integration tests, real device testing
+3. **Tests**: Unit and integration tests in `tests/`
 
-## Key Directories
+## Key Improvements
 
-### `apks/`
-- Contains target APK files for analysis
-- Organized by version and source
+### 1. Clear Separation of Concerns
+- **Source Code**: All source code in `src/` directory
+- **Tools**: Analysis tools in `tools/` directory
+- **Assets**: Static files in `assets/` directory
+- **Configuration**: All configs in `config/` directory
 
-### `analysis/`
-- Contains analysis documentation and logs
-- Generated during the analysis process
+### 2. Better Organization
+- **MCP Servers**: Dedicated directory for MCP server implementations
+- **Review Gate**: Integrated into source code structure
+- **Tests**: Comprehensive test suite with proper organization
+- **Documentation**: Centralized and well-structured
 
-### `output/`
-- Contains decompiled APK files
-- Generated by apktool and jadx
+### 3. Modern Python Project Structure
+- **pyproject.toml**: Modern Python project configuration
+- **setup.py**: Proper package installation
+- **Requirements**: Separated production and development dependencies
 
-### `scripts/`
-- Contains analysis and automation scripts
-- Orchestrates the reverse engineering workflow
-
-### `tools/`
-- Contains external tools and utilities
-- Includes MCP servers and analysis tools
+### 4. Asset Management
+- **APKs**: Organized in assets directory
+- **Tools**: External binaries properly managed
+- **Extensions**: Review Gate assets organized
 
 ## Usage Instructions
 
 ### Initial Setup
 1. Install dependencies: `pip install -r requirements.txt`
-2. Configure MCP servers in `.cursor/mcp.json`
-3. Place APK file in `apks/` directory
+2. Install development dependencies: `pip install -r requirements-dev.txt`
+3. Configure MCP servers in `config/mcp.json`
+4. Place APK file in `assets/apks/` directory
 
 ### Running Analysis
-1. **Full Analysis**: `python scripts/analyze.py apks/MarsPro_1.3.2_APKPure.xapk`
+1. **Full Analysis**: `python scripts/analyze.py assets/apks/MarsPro_1.3.2_APKPure.xapk`
 2. **Individual Phases**: Modify `scripts/analyze.py` to run specific phases
 3. **Manual Frida**: Use individual Frida scripts for dynamic analysis
 
 ### Home Assistant Integration
-1. Copy `custom_components/marspro/` to Home Assistant config directory
-2. Use `configuration_samples/marspro_configuration.yaml` as template
+1. Copy `src/marspro/` to Home Assistant config directory
+2. Use `config/home_assistant/marspro_configuration.yaml` as template
 3. Update configuration with discovered device information
+
+### Development
+1. **Running Tests**: `pytest tests/`
+2. **Code Formatting**: `black src/ tests/`
+3. **Linting**: `flake8 src/ tests/`
+4. **Pre-commit**: `pre-commit run --all-files`
 
 ## Notes
 
@@ -194,8 +246,9 @@ MarsPro/
 - Home Assistant integration is ready for discovered APIs
 - MCP tools provide enhanced analysis capabilities
 - Project structure supports collaborative development
+- Modern Python packaging standards are followed
+- Clear separation between source code, tools, and assets
 
 ---
 
-*Last Updated: 2025-06-22*
-*Project Status: Phase 1 Complete, Ready for Dynamic Analysis* 
+*Last Updated: 2025-01-22* 

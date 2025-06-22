@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Search(path:../ghidra)",
-      "Read(../ghidra/**)"
-    ],
-    "deny": []
-  }
-}
