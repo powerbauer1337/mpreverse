@@ -1,0 +1,20 @@
+# Core reverse engineering tools
+frida-tools>=14.0.0
+uv>=0.7.0
+mcp>=1.9.0
+
+# Home Assistant integration dependencies
+aiohttp>=3.8.0
+bleak>=0.20.0
+
+# Development dependencies
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+black>=22.0.0
+flake8>=5.0.0
+
+# Speech-to-text for Review Gate V2
+faster-whisper>=0.10.0
+
+# Note: apktool and jadx are now custom MCP servers in tools/
+# They use the system-installed apktool and jadx binaries 

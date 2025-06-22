@@ -1,0 +1,157 @@
+
+# 🔁 MarsPro-App Reverse Engineering & Home Assistant Integration (Cursor Prompt)
+
+## 🎯 Ziel
+Reverse-engineere die Android-App „MarsPro“, extrahiere alle relevanten REST- und BLE-Endpunkte und implementiere eine Home Assistant Integration zur lokalen Steuerung von Lampen und Ventilatoren – ohne Cloud.
+
+Arbeite dabei vollständig innerhalb von **Cursor unter Ubuntu 24**, verwende **MCP-Tools**, **Frida**, und automatisiere alles inkl. Dokumentation, Code und Tests.
+
+---
+
+## 🧰 Vorbereitungen (einmalig)
+
+1. Installiere systemweit:
+   ```bash
+   sudo apt update && sudo apt install openjdk-17-jdk python3 python3-pip adb unzip curl
+   pip install frida-tools uv
+   ```
+
+2. Installiere und konfiguriere MCP-Tools in Cursor:
+   - `apktool-mcp-server` (mit `uv`)
+   - `jadx-ai-mcp`
+   - Lege `.cursor/mcp.json` an mit Pfaden zu den MCP-Servern
+   - Teste mit: `cursor mcp list`
+
+3. Lege Projektstruktur an:
+   ```
+   MarsProAnalysis/
+   ├── MarsPro.apk
+   ├── .cursor/mcp.json
+   ├── scripts/
+   ├── docs/
+   ├── configuration_samples/
+   └── custom_components/marspro/
+   ```
+
+---
+
+## 🔍 Phase 1: APK statisch analysieren
+
+1. Dekompiliere die APK:
+   ```bash
+   apktool d MarsPro.apk -o MarsPro_apktool
+   jadx -d MarsPro_jadx_out MarsPro.apk
+   ```
+
+2. Verwende MCP-Tools über Cursor-Chat:
+   - `get_android_manifest()`
+   - `get_all_classes()`
+   - `search_in_file("http")`
+   - `get_class_source("com.marspro.MainActivity")`
+
+3. Dokumentiere:
+   - Berechtigungen aus Manifest
+   - REST-Endpunkte und Parameter
+   - BLE-Service-/Charakteristik-UUIDs
+   - Authentifizierungsmechanismen
+
+---
+
+## 🧪 Phase 2: Dynamische Analyse mit Frida
+
+1. Starte `frida-server` auf einem gerooteten Gerät:
+   ```bash
+   adb push frida-server /data/local/tmp/
+   adb shell "chmod 755 /data/local/tmp/frida-server && su -c /data/local/tmp/frida-server &"
+   ```
+
+2. Lade deine Frida-Hooks (z. B.):
+   - `scripts/net_hook.js`: HTTP-Interception
+   - `scripts/ble_hook.js`: BLE-Kommandos & Responses
+
+3. Starte MarsPro unter Frida:
+   ```bash
+   frida -U -f com.marspro.app -l scripts/net_hook.js --no-pause
+   ```
+
+4. Extrahiere:
+   - Tokens
+   - API-Calls
+   - BLE-GATT-Datenverkehr
+
+---
+
+## 📑 Phase 3: Dokumentation & Mapping
+
+1. Erstelle folgende Dateien:
+   - `docs/analysis.md`: Zusammenfassung statisch + dynamisch
+   - `docs/endpoints.md`: Tabellen mit URL, Methode, Payload
+   - `docs/api_mapping.md`: Cloud- vs. Local-Funktionen
+
+2. Verwende im Chat:
+   - „Fasse alle API-Endpunkte als Markdown-Tabelle zusammen“
+   - „Liste alle Funktionen auf, die writeCharacteristic aufrufen“
+
+---
+
+## ⚙️ Phase 4: Komponentencode erstellen
+
+1. Erstelle `api_cloud.py` basierend auf Analyse von `api.py`
+2. Implementiere `api_ble.py` (BLE via `bleak`):
+   - `connect()`, `send_command()`, `get_status()`
+
+3. Erstelle Home Assistant-Komponenten in:
+   ```
+   custom_components/marspro/
+   ├── __init__.py
+   ├── manifest.json
+   ├── light.py
+   ├── fan.py
+   └── sensor.py
+   ```
+
+---
+
+## 🧩 Phase 5: Home Assistant Integration
+
+1. YAML-Konfigurationsbeispiel:
+   ```yaml
+   marspro:
+     email: user@example.com
+     password: mypass
+     use_cloud: false
+     ble_mac: "A0:B1:C2:D3:E4:F5"
+   ```
+
+2. Lege in `configuration_samples/` passende YAML-Snippets ab
+
+3. Generiere `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md` automatisch mit Cursor-Chat
+
+---
+
+## 🧪 Phase 6: Validierung & Tests
+
+1. Testskripte:
+   - `scripts/test_rest.py`
+   - `scripts/test_ble.py`
+
+2. Automatisch via:
+   ```bash
+   python3 -m unittest discover -s custom_components/marspro/
+   ```
+
+3. Checkliste:
+   - Gerät per BLE steuerbar?
+   - Token handling stabil?
+   - Konfiguration mit Home Assistant GUI funktioniert?
+
+---
+
+## ✅ Abschluss
+
+1. Cursor-Chat-Prompt:
+   - „Validiere, ob alle Anforderungen aus dem SRD erfüllt sind“
+2. Prüfe, ob folgende Dateien existieren:
+   - `docs/`, `scripts/`, `custom_components/`
+   - `api_cloud.py`, `api_ble.py`
+   - YAML-Snippets + MCP konfiguriert

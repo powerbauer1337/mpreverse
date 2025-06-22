@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "reverse-engineering-assistant": {
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp.server.sse",
+        "--port",
+        "8080"
+      ],
+      "env": {
+        "GHIDRA_INSTALL_DIR": "C:\\Users\\marvi\\Coding\\ghidra_11.3.2_PUBLIC"
+      }
+    },
+    "apktool-mcp-server": {
+      "command": "uv",
+      "args": [
+        "run",
+        "apktool-mcp-server"
+      ]
+    },
+    "jadx-ai-mcp": {
+      "command": "uv",
+      "args": [
+        "run",
+        "jadx-ai-mcp"
+      ]
+    }
+  }
+} 
