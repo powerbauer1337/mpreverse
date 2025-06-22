@@ -30,11 +30,17 @@ class MarsProAnalyzer:
         self.output_dir = self.project_root / "output"
         self.analysis_dir = self.project_root / "analysis"
         
+        # Setup tool paths
+        self.apktool_path = self.project_root / "assets" / "tools" / "apktool" / "apktool.jar"
+        self.jadx_path = self.project_root / "assets" / "tools" / "jadx" / "bin" / "jadx"
+        
         # Create output directories
         self.output_dir.mkdir(exist_ok=True)
         self.analysis_dir.mkdir(exist_ok=True)
         
         logger.info(f"Initialized analyzer for APK: {self.apk_path}")
+        logger.info(f"APKTool path: {self.apktool_path}")
+        logger.info(f"JADX path: {self.jadx_path}")
     
     def phase1_static_analysis(self) -> bool:
         """Phase 1: Static APK analysis using apktool and jadx."""
@@ -48,10 +54,10 @@ class MarsProAnalyzer:
             apktool_output.mkdir(exist_ok=True)
             jadx_output.mkdir(exist_ok=True)
             
-            # Run apktool
+            # Run apktool using Java
             logger.info("Running apktool...")
             result = subprocess.run([
-                "apktool", "d", str(self.apk_path), 
+                "java", "-jar", str(self.apktool_path), "d", str(self.apk_path), 
                 "-o", str(apktool_output), "-f"
             ], capture_output=True, text=True)
             
@@ -63,8 +69,13 @@ class MarsProAnalyzer:
             
             # Run jadx
             logger.info("Running jadx...")
+            if os.name == 'nt':  # Windows
+                jadx_cmd = str(self.jadx_path) + ".bat"
+            else:  # Unix/Linux
+                jadx_cmd = str(self.jadx_path)
+            
             result = subprocess.run([
-                "jadx", "-d", str(jadx_output), str(self.apk_path)
+                jadx_cmd, "-d", str(jadx_output), str(self.apk_path)
             ], capture_output=True, text=True)
             
             if result.returncode == 0:
